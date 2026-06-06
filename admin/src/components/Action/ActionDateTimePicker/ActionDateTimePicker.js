@@ -7,6 +7,54 @@ import { useSettings } from '../../../hooks/useSettings';
 
 import './ActionDateTimerPicker.css';
 
+const parseDate = (value) => {
+	if (!value) {
+		return null;
+	}
+
+	const date = value instanceof Date ? value : new Date(value);
+
+	return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const toPickerDate = (value) => {
+	const date = parseDate(value);
+
+	if (!date) {
+		return null;
+	}
+
+	return new Date(
+		date.getUTCFullYear(),
+		date.getUTCMonth(),
+		date.getUTCDate(),
+		date.getUTCHours(),
+		date.getUTCMinutes(),
+		date.getUTCSeconds(),
+		date.getUTCMilliseconds()
+	);
+};
+
+const toServerDateTime = (value) => {
+	const date = parseDate(value);
+
+	if (!date) {
+		return null;
+	}
+
+	return new Date(
+		Date.UTC(
+			date.getFullYear(),
+			date.getMonth(),
+			date.getDate(),
+			date.getHours(),
+			date.getMinutes(),
+			date.getSeconds(),
+			date.getMilliseconds()
+		)
+	).toISOString();
+};
+
 const ActionDateTimePicker = ({ executeAt, mode, isCreating, isEditing, onChange }) => {
 	const { formatMessage, locale: browserLocale } = useIntl();
 	const [locale, setLocale] = useState(browserLocale);
@@ -15,7 +63,7 @@ const ActionDateTimePicker = ({ executeAt, mode, isCreating, isEditing, onChange
 
 	function handleDateChange(date) {
 		if (onChange) {
-			onChange(date);
+			onChange(toServerDateTime(date));
 		}
 	}
 
@@ -55,7 +103,7 @@ const ActionDateTimePicker = ({ executeAt, mode, isCreating, isEditing, onChange
 				<DateTimePicker
 					ariaLabel="datetime picker"
 					onChange={handleDateChange}
-					value={executeAt ? new Date(executeAt) : null}
+					value={toPickerDate(executeAt)}
 					disabled={!isCreating}
 					step={step}
 					locale={locale}

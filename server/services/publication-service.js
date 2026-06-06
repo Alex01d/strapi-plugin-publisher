@@ -65,7 +65,7 @@ module.exports = ({ strapi }) => ({
 		}
 
 		// ensure entity is in correct publication status
-		if (!entity.publishedAt && mode === 'publish') {
+		if (mode === 'publish') {
 			await this.publish(record.entitySlug, entityId, {
 				publishedAt: record.executeAt ? new Date(record.executeAt) : new Date(),
 			});

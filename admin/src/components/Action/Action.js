@@ -15,7 +15,7 @@ const Action = ({ mode, entityId, entitySlug }) => {
 	const toggleNotification = useNotification();
 	const [actionId, setActionId] = useState(0);
 	const [isEditing, setIsEditing] = useState(false);
-	const [executeAt, setExecuteAt] = useState(0);
+	const [executeAt, setExecuteAt] = useState(null);
 	const [isCreating, setIsCreating] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [canPublish, setCanPublish] = useState(true);
@@ -123,7 +123,7 @@ const Action = ({ mode, entityId, entitySlug }) => {
 		try {
 			await deleteAction({ id: actionId });
 			setActionId(0);
-			setExecuteAt(0);
+			setExecuteAt(null);
 			setIsCreating(false);
 			setIsEditing(false);
 		} catch (error) {
